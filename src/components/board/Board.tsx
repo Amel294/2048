@@ -27,6 +27,34 @@ const generateRandomBoard = (): number[][] => {
   
     return board;
   };
+  const getTileColor = (value: number): string => {
+    switch (value) {
+      case 2:
+        return "bg-green-100"; 
+      case 4:
+        return "bg-blue-100"; 
+      case 8:
+        return "bg-yellow-200"; 
+      case 16:
+        return "bg-orange-200"; 
+      case 32:
+        return "bg-red-200"; 
+      case 64:
+        return "bg-pink-200"; 
+      case 128:
+        return "bg-purple-200"; 
+      case 256:
+        return "bg-indigo-200"; 
+      case 512:
+        return "bg-teal-200"; 
+      case 1024:
+        return "bg-blue-200"; 
+      case 2048:
+        return "bg-yellow-300"; 
+      default:
+        return "bg-gray-200"; 
+    }
+  };
 
 const Board = () => {
   const [board, setBoard] = useState(generateRandomBoard);
@@ -133,7 +161,7 @@ const Board = () => {
           row.map((cell, colIndex) => (
             <div
               key={`${rowIndex}-${colIndex}`}
-              className="flex items-center justify-center h-16 w-16 bg-gray-200 rounded-md text-xl font-bold"
+              className={`flex items-center justify-center h-16 w-16 ${getTileColor(cell)} rounded-md text-xl font-bold`}
             >
               {cell !== 0 ? cell : ""}
             </div>

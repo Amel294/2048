@@ -2,7 +2,7 @@ import Board from "./components/board/board"
 
 const App = () => {
   return (
-    <div>
+    <div className="bg-black">
          <Board/>     
     </div>
   )
