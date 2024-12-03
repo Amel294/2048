@@ -1,52 +1,55 @@
-import React, { useEffect, useState } from "react";
-import Tile from "./Tile";
-import { areBoardsEqual, generateRandomBoard, getTileColor, shiftAndMergeLeft, transpose } from "../../utils/gameUtils";
+import React, { useEffect, useState } from 'react';
+import Tile from './Tile';
+import { areBoardsEqual, generateRandomBoard, getTileColor, shiftAndMergeLeft, transpose } from '../../utils/gameUtils';
+import useGameStore from '../../store/useGameStore';
+import Score from '../score/Score';
 
 const Board: React.FC = () => {
   const [board, setBoard] = useState(generateRandomBoard);
+  const { score, increaseScore } = useGameStore();
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) {
+      if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
         event.preventDefault();
       }
 
       switch (event.key) {
-        case "ArrowLeft":
-          handleMove("left");
+        case 'ArrowLeft':
+          handleMove('left');
           break;
-        case "ArrowRight":
-          handleMove("right");
+        case 'ArrowRight':
+          handleMove('right');
           break;
-        case "ArrowUp":
-          handleMove("up");
+        case 'ArrowUp':
+          handleMove('up');
           break;
-        case "ArrowDown":
-          handleMove("down");
+        case 'ArrowDown':
+          handleMove('down');
           break;
         default:
           break;
       }
     };
 
-    window.addEventListener("keydown", handleKeyPress);
+    window.addEventListener('keydown', handleKeyPress);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyPress);
+      window.removeEventListener('keydown', handleKeyPress);
     };
   }, [board]);
 
-  const handleMove = (direction: "left" | "right" | "up" | "down") => {
+  const handleMove = (direction: 'left' | 'right' | 'up' | 'down') => {
     let newBoard = structuredClone(board);
 
-    if (direction === "left") {
+    if (direction === 'left') {
       newBoard = newBoard.map(shiftAndMergeLeft);
-    } else if (direction === "right") {
+    } else if (direction === 'right') {
       newBoard = newBoard.map(row => shiftAndMergeLeft(row.reverse()).reverse());
-    } else if (direction === "up") {
+    } else if (direction === 'up') {
       newBoard = transpose(newBoard).map(shiftAndMergeLeft);
       newBoard = transpose(newBoard);
-    } else if (direction === "down") {
+    } else if (direction === 'down') {
       newBoard = transpose(newBoard).map(row => shiftAndMergeLeft(row.reverse()).reverse());
       newBoard = transpose(newBoard);
     }
@@ -66,7 +69,7 @@ const Board: React.FC = () => {
     });
 
     if (emptyTiles.length === 0) {
-      console.log("Game Over");
+      console.log('Game Over');
       return;
     }
 
@@ -77,10 +80,12 @@ const Board: React.FC = () => {
     updatedBoard[randomTile.row][randomTile.col] = newNumber;
 
     setBoard(updatedBoard);
+
+    increaseScore(newNumber); // Increase score when a new tile is added
   };
 
   return (
-    <div className="w-fit h-fit m-2 border-solid border-2 border-gray-950 p-4 rounded-lg">
+    <div className="w-fit h-fit m-2 border-solid border-[0.5px] border-white p-4 rounded-lg">
       <div className="grid grid-cols-4 gap-2">
         {board.map((row, rowIndex) =>
           row.map((cell, colIndex) => (
@@ -88,6 +93,7 @@ const Board: React.FC = () => {
           ))
         )}
       </div>
+     <Score/>
     </div>
   );
 };
