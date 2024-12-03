@@ -1,14 +1,35 @@
 import { useEffect, useState } from "react";
 
-const initialBoard = [
-  [2, 2, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-];
+const generateRandomBoard = (): number[][] => {
+    const board = Array(4)
+      .fill(null)
+      .map(() => Array(4).fill(0)); 
+  
+    const randomizeTile = () => {
+      const emptyPositions: { row: number; col: number }[] = [];
+      
+      board.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          if (cell === 0) emptyPositions.push({ row: rowIndex, col: colIndex });
+        });
+      });
+  
+      if (emptyPositions.length > 0) {
+        const randomPosition =
+          emptyPositions[Math.floor(Math.random() * emptyPositions.length)];
+        const newNumber = Math.random() < 0.9 ? 2 : 4;
+        board[randomPosition.row][randomPosition.col] = newNumber;
+      }
+    };
+  
+    randomizeTile();
+    randomizeTile();
+  
+    return board;
+  };
 
 const Board = () => {
-  const [board, setBoard] = useState(initialBoard);
+  const [board, setBoard] = useState(generateRandomBoard);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
