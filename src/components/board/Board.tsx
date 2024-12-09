@@ -156,7 +156,20 @@ const Board: React.FC = () => {
 
     return true; 
   };
-
+  useEffect(() => {
+    const preventPullToRefresh = (event: TouchEvent) => {
+      // Prevent pull-to-refresh for downward swipes at the top of the page
+      if (window.scrollY === 0 && event.touches[0].clientY > 0) {
+        event.preventDefault();
+      }
+    };
+  
+    window.addEventListener('touchmove', preventPullToRefresh, { passive: false });
+  
+    return () => {
+      window.removeEventListener('touchmove', preventPullToRefresh);
+    };
+  }, []);
   return (
     <div className="w-fit h-fit m-2 border-solid border-[0.5px] border-white p-4 rounded-lg">
       <div className="grid grid-cols-4 gap-2">
