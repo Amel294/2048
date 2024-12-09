@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import Tile from './Tile';
 import { areBoardsEqual, getTileColor, shiftAndMergeLeft, transpose } from '../../utils/gameUtils';
 import useGameStore from '../../store/useGameStore';
@@ -58,7 +58,7 @@ const Board: React.FC = () => {
       }
 
       if (!areBoardsEqual(newBoard, board)) {
-        addToHistory(board)
+        addToHistory()
         spawnNewNumber(newBoard); 
 
       }
