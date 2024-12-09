@@ -1,6 +1,6 @@
 
 
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import Tile from './Tile';
 import { areBoardsEqual, getTileColor, shiftAndMergeLeft, transpose } from '../../utils/gameUtils';
 import useGameStore from '../../store/useGameStore';
@@ -8,8 +8,9 @@ import Score from '../score/Score';
 import GameOver from './GameOver';
 
 const Board: React.FC = () => {
+  const { board, setBoard, regenerateBoard, increaseScore, gameOver, setGameOver, addToHistory, undo } = useGameStore();
 
-  const { board,setBoard,regenerateBoard,increaseScore,gameOver,setGameOver,addToHistory,undo } = useGameStore();
+  const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(null);
 
   const spawnNewNumber = useCallback(
     (currentBoard: number[][]) => {
@@ -38,7 +39,7 @@ const Board: React.FC = () => {
         setGameOver(true); 
       }
     },
-    [increaseScore]
+    [setBoard, increaseScore, setGameOver]
   );
 
   const handleMove = useCallback(
@@ -63,9 +64,38 @@ const Board: React.FC = () => {
 
       }
     },
-    [board, spawnNewNumber]
+    [board, spawnNewNumber, addToHistory]
   );
 
+  const handleTouchStart = (event: TouchEvent) => {
+    const { clientX, clientY } = event.touches[0];
+    setTouchStart({ x: clientX, y: clientY });
+  };
+
+  const handleTouchEnd = useCallback(
+    (event: TouchEvent) => {
+      if (!touchStart) return;
+  
+      const { clientX, clientY } = event.changedTouches[0];
+  
+      const deltaX = clientX - touchStart.x;
+      const deltaY = clientY - touchStart.y;
+  
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        // Horizontal swipe
+        if (deltaX > 30) handleMove('right'); // Right swipe
+        else if (deltaX < -30) handleMove('left'); // Left swipe
+      } else {
+        // Vertical swipe
+        if (deltaY > 30) handleMove('down'); // Down swipe
+        else if (deltaY < -30) handleMove('up'); // Up swipe
+      }
+  
+      setTouchStart(null);
+    },
+    [touchStart, handleMove]
+  );
+  
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
@@ -91,11 +121,15 @@ const Board: React.FC = () => {
     };
 
     window.addEventListener('keydown', handleKeyPress);
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchend', handleTouchEnd);
 
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [handleMove]);
+  }, [handleMove, handleTouchEnd, touchStart]);
 
   const checkGameOver = (currentBoard: number[][]): boolean => {
     const directions = ['left', 'right', 'up', 'down'];
