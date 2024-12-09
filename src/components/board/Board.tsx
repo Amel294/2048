@@ -9,7 +9,7 @@ import GameOver from './GameOver';
 
 const Board: React.FC = () => {
 
-  const { board,setBoard,regenerateBoard,increaseScore,gameOver,setGameOver } = useGameStore();
+  const { board,setBoard,regenerateBoard,increaseScore,gameOver,setGameOver,addToHistory,undo } = useGameStore();
 
   const spawnNewNumber = useCallback(
     (currentBoard: number[][]) => {
@@ -58,7 +58,9 @@ const Board: React.FC = () => {
       }
 
       if (!areBoardsEqual(newBoard, board)) {
+        addToHistory(board)
         spawnNewNumber(newBoard); 
+
       }
     },
     [board, spawnNewNumber]
@@ -132,7 +134,11 @@ const Board: React.FC = () => {
       </div>
       <Score />
       {gameOver && <GameOver />}
-      <button onClick={regenerateBoard}>reset</button>
+      <div className='text-white flex justify-between'>
+      <button onClick={regenerateBoard}>Restart</button>
+      <button onClick={undo}>Undo</button>
+
+      </div>
     </div>
   );
 };
