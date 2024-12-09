@@ -1,12 +1,68 @@
-import React, { useEffect, useState } from 'react';
+
+
+import React, { useEffect, useState, useCallback } from 'react';
 import Tile from './Tile';
-import { areBoardsEqual, generateRandomBoard, getTileColor, shiftAndMergeLeft, transpose } from '../../utils/gameUtils';
+import { areBoardsEqual, getTileColor, shiftAndMergeLeft, transpose } from '../../utils/gameUtils';
 import useGameStore from '../../store/useGameStore';
 import Score from '../score/Score';
+import GameOver from './GameOver';
 
 const Board: React.FC = () => {
-  const [board, setBoard] = useState(generateRandomBoard);
-  const { score, increaseScore } = useGameStore();
+
+  const { board,setBoard,regenerateBoard,increaseScore,gameOver,setGameOver } = useGameStore();
+
+  const spawnNewNumber = useCallback(
+    (currentBoard: number[][]) => {
+      const emptyTiles: { row: number; col: number }[] = [];
+
+      currentBoard.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          if (cell === 0) emptyTiles.push({ row: rowIndex, col: colIndex });
+        });
+      });
+
+      if (emptyTiles.length === 0) {
+        return;
+      }
+
+      const randomTile = emptyTiles[Math.floor(Math.random() * emptyTiles.length)];
+      const newNumber = Math.random() < 0.9 ? 2 : 4;
+
+      const updatedBoard = structuredClone(currentBoard);
+      updatedBoard[randomTile.row][randomTile.col] = newNumber;
+
+      setBoard(updatedBoard);
+      increaseScore(newNumber);
+
+      if (checkGameOver(updatedBoard)) {
+        setGameOver(true); 
+      }
+    },
+    [increaseScore]
+  );
+
+  const handleMove = useCallback(
+    (direction: 'left' | 'right' | 'up' | 'down') => {
+      let newBoard = structuredClone(board);
+
+      if (direction === 'left') {
+        newBoard = newBoard.map(shiftAndMergeLeft);
+      } else if (direction === 'right') {
+        newBoard = newBoard.map((row) => shiftAndMergeLeft(row.reverse()).reverse());
+      } else if (direction === 'up') {
+        newBoard = transpose(newBoard).map(shiftAndMergeLeft);
+        newBoard = transpose(newBoard);
+      } else if (direction === 'down') {
+        newBoard = transpose(newBoard).map((row) => shiftAndMergeLeft(row.reverse()).reverse());
+        newBoard = transpose(newBoard);
+      }
+
+      if (!areBoardsEqual(newBoard, board)) {
+        spawnNewNumber(newBoard); 
+      }
+    },
+    [board, spawnNewNumber]
+  );
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -37,51 +93,32 @@ const Board: React.FC = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [board]);
+  }, [handleMove]);
 
-  const handleMove = (direction: 'left' | 'right' | 'up' | 'down') => {
-    let newBoard = structuredClone(board);
+  const checkGameOver = (currentBoard: number[][]): boolean => {
+    const directions = ['left', 'right', 'up', 'down'];
 
-    if (direction === 'left') {
-      newBoard = newBoard.map(shiftAndMergeLeft);
-    } else if (direction === 'right') {
-      newBoard = newBoard.map(row => shiftAndMergeLeft(row.reverse()).reverse());
-    } else if (direction === 'up') {
-      newBoard = transpose(newBoard).map(shiftAndMergeLeft);
-      newBoard = transpose(newBoard);
-    } else if (direction === 'down') {
-      newBoard = transpose(newBoard).map(row => shiftAndMergeLeft(row.reverse()).reverse());
-      newBoard = transpose(newBoard);
+    for (const direction of directions) {
+      let simulatedBoard = structuredClone(currentBoard);
+
+      if (direction === 'left') {
+        simulatedBoard = simulatedBoard.map(shiftAndMergeLeft);
+      } else if (direction === 'right') {
+        simulatedBoard = simulatedBoard.map((row) => shiftAndMergeLeft(row.reverse()).reverse());
+      } else if (direction === 'up') {
+        simulatedBoard = transpose(simulatedBoard).map(shiftAndMergeLeft);
+        simulatedBoard = transpose(simulatedBoard);
+      } else if (direction === 'down') {
+        simulatedBoard = transpose(simulatedBoard).map((row) => shiftAndMergeLeft(row.reverse()).reverse());
+        simulatedBoard = transpose(simulatedBoard);
+      }
+
+      if (!areBoardsEqual(simulatedBoard, currentBoard)) {
+        return false; 
+      }
     }
 
-    if (!areBoardsEqual(newBoard, board)) {
-      spawnNewNumber(newBoard);
-    }
-  };
-
-  const spawnNewNumber = (currentBoard: number[][]) => {
-    const emptyTiles: { row: number; col: number }[] = [];
-
-    currentBoard.forEach((row, rowIndex) => {
-      row.forEach((cell, colIndex) => {
-        if (cell === 0) emptyTiles.push({ row: rowIndex, col: colIndex });
-      });
-    });
-
-    if (emptyTiles.length === 0) {
-      console.log('Game Over');
-      return;
-    }
-
-    const randomTile = emptyTiles[Math.floor(Math.random() * emptyTiles.length)];
-    const newNumber = Math.random() < 0.9 ? 2 : 4;
-
-    const updatedBoard = structuredClone(currentBoard);
-    updatedBoard[randomTile.row][randomTile.col] = newNumber;
-
-    setBoard(updatedBoard);
-
-    increaseScore(newNumber); // Increase score when a new tile is added
+    return true; 
   };
 
   return (
@@ -93,7 +130,9 @@ const Board: React.FC = () => {
           ))
         )}
       </div>
-     <Score/>
+      <Score />
+      {gameOver && <GameOver />}
+      <button onClick={regenerateBoard}>reset</button>
     </div>
   );
 };
