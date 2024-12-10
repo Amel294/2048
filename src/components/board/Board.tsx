@@ -6,10 +6,10 @@ import { areBoardsEqual, getTileColor, shiftAndMergeLeft, transpose } from '../.
 import useGameStore from '../../store/useGameStore';
 import Score from '../score/Score';
 import GameOver from './GameOver';
-import { Button } from '@nextui-org/react';
+import RestartAndUndoButtons from './RestartAndUndoButtons';
 
 const Board: React.FC = () => {
-  const { board, setBoard, regenerateBoard, increaseScore, gameOver, setGameOver, addToHistory, undo } = useGameStore();
+  const { board, setBoard, increaseScore, gameOver, setGameOver, addToHistory } = useGameStore();
 
   const [touchStart, setTouchStart] = useState<{ x: number; y: number } | null>(null);
 
@@ -196,16 +196,7 @@ const Board: React.FC = () => {
           {gameOver && <GameOver />}
         </div>
         <div className="flex justify-end gap-6">
-          <Button color='danger'
-            onPress={regenerateBoard}
-          >
-            Restart
-          </Button>
-          <Button color='warning'
-            onPress={undo}
-          >
-            <span>⏪</span> Undo
-          </Button>
+          <RestartAndUndoButtons/>
         </div>
 
       </div>
