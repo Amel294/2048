@@ -171,22 +171,47 @@ const Board: React.FC = () => {
     };
   }, []);
   return (
-    <div className="w-fit h-fit m-2 border-solid border-[0.5px] border-white p-4 rounded-lg">
-      <div className="grid grid-cols-4 gap-2">
-        {board.map((row, rowIndex) =>
-          row.map((cell, colIndex) => (
-            <Tile key={`${rowIndex}-${colIndex}`} value={cell} colorClass={getTileColor(cell)} />
-          ))
-        )}
-      </div>
+    <div className="flex flex-col items-center min-h-screen  text-white p-4">
+  <div className="w-full max-w-md md:max-w-lg lg:max-w-xl bg-gray-700 p-6 rounded-xl shadow-lg">
+    {/* Game Board */}
+    <div className="grid grid-cols-4 gap-3 lg:gap-4">
+      {board.map((row, rowIndex) =>
+        row.map((cell, colIndex) => (
+          <Tile
+            key={`${rowIndex}-${colIndex}`}
+            value={cell}
+            colorClass={getTileColor(cell)}
+          />
+        ))
+      )}
+    </div>
+  </div>
+
+  {/* Controls */}
+  <div className="mt-6 flex flex-col w-full max-w-md md:max-w-lg lg:max-w-xl">
+    <div className="flex justify-between">
+      <button
+        className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition flex items-center gap-2"
+        onClick={regenerateBoard}
+      >
+        <span>🔄</span> Restart
+      </button>
+      <button
+        className="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition flex items-center gap-2"
+        onClick={undo}
+      >
+        <span>⏪</span> Undo
+      </button>
+    </div>
+
+    {/* Score & Game Over */}
+    <div className="mt-4 flex justify-between items-center">
       <Score />
       {gameOver && <GameOver />}
-      <div className='text-white flex justify-between'>
-      <button onClick={regenerateBoard}>Restart</button>
-      <button onClick={undo}>Undo</button>
-
-      </div>
     </div>
+  </div>
+</div>
+
   );
 };
 

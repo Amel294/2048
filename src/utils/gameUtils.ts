@@ -32,29 +32,29 @@ export const generateRandomBoard = (): number[][] => {
   export const getTileColor = (value: number): string => {
     switch (value) {
       case 2:
-        return "bg-green-100"; // Soft green
+        return "bg-gradient-to-br from-green-100 to-green-300"; // Soft green gradient
       case 4:
-        return "bg-blue-100"; // Soft blue
+        return "bg-gradient-to-br from-blue-100 to-blue-300"; // Soft blue gradient
       case 8:
-        return "bg-yellow-200"; // Light yellow
+        return "bg-gradient-to-br from-yellow-200 to-yellow-400"; // Light yellow gradient
       case 16:
-        return "bg-orange-200"; // Light orange
+        return "bg-gradient-to-br from-orange-200 to-orange-400"; // Light orange gradient
       case 32:
-        return "bg-red-200"; // Light coral
+        return "bg-gradient-to-br from-red-200 to-red-400"; // Light coral gradient
       case 64:
-        return "bg-pink-200"; // Light pink
+        return "bg-gradient-to-br from-pink-200 to-pink-400"; // Light pink gradient
       case 128:
-        return "bg-purple-200"; // Soft purple
+        return "bg-gradient-to-br from-purple-200 to-purple-400"; // Soft purple gradient
       case 256:
-        return "bg-indigo-200"; // Lavender
+        return "bg-gradient-to-br from-indigo-200 to-indigo-400"; // Lavender gradient
       case 512:
-        return "bg-teal-200"; // Light teal
+        return "bg-gradient-to-br from-teal-200 to-teal-400"; // Light teal gradient
       case 1024:
-        return "bg-blue-200"; // Light blue
+        return "bg-gradient-to-br from-blue-200 to-blue-400"; // Light blue gradient
       case 2048:
-        return "bg-yellow-300"; // Soft gold
+        return "bg-gradient-to-br from-yellow-300 to-yellow-500"; // Soft gold gradient
       default:
-        return "bg-gray-200"; // Default background for empty or unrecognized tiles
+        return "bg-gradient-to-br from-gray-200 to-gray-300"; // Default gradient for empty or unrecognized tiles
     }
   };
   
