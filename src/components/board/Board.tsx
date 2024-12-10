@@ -6,6 +6,7 @@ import { areBoardsEqual, getTileColor, shiftAndMergeLeft, transpose } from '../.
 import useGameStore from '../../store/useGameStore';
 import Score from '../score/Score';
 import GameOver from './GameOver';
+import { Button } from '@nextui-org/react';
 
 const Board: React.FC = () => {
   const { board, setBoard, regenerateBoard, increaseScore, gameOver, setGameOver, addToHistory, undo } = useGameStore();
@@ -187,22 +188,20 @@ const Board: React.FC = () => {
     </div>
   </div>
 
-  {/* Controls */}
-  <div className="mt-6 flex flex-col w-full max-w-md md:max-w-lg lg:max-w-xl">
-    <div className="flex justify-between">
-      <button
-        className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition flex items-center gap-2"
-        onClick={regenerateBoard}
-      >
-        <span>🔄</span> Restart
-      </button>
-      <button
-        className="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md hover:bg-green-700 transition flex items-center gap-2"
-        onClick={undo}
-      >
-        <span>⏪</span> Undo
-      </button>
-    </div>
+      {/* Controls */}
+      <div className="mt-6 flex flex-col w-full max-w-md md:max-w-lg lg:max-w-xl">
+        <div className="flex justify-end gap-6">
+          <Button color='danger'
+            onPress={regenerateBoard}
+          >
+           Restart
+          </Button>
+          <Button color='warning'
+            onPress={undo}
+          >
+            <span>⏪</span> Undo
+          </Button>
+        </div>
 
     {/* Score & Game Over */}
     <div className="mt-4 flex justify-between items-center">
