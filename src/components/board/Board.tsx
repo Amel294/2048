@@ -190,11 +190,16 @@ const Board: React.FC = () => {
 
       {/* Controls */}
       <div className="mt-6 flex flex-col w-full max-w-md md:max-w-lg lg:max-w-xl">
+        {/* Score & Game Over */}
+        <div className="mb-4 flex justify-between items-center">
+          <Score />
+          {gameOver && <GameOver />}
+        </div>
         <div className="flex justify-end gap-6">
           <Button color='danger'
             onPress={regenerateBoard}
           >
-           Restart
+            Restart
           </Button>
           <Button color='warning'
             onPress={undo}
@@ -203,13 +208,8 @@ const Board: React.FC = () => {
           </Button>
         </div>
 
-    {/* Score & Game Over */}
-    <div className="mt-4 flex justify-between items-center">
-      <Score />
-      {gameOver && <GameOver />}
+      </div>
     </div>
-  </div>
-</div>
 
   );
 };
