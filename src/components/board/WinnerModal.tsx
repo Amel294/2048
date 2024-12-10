@@ -30,7 +30,7 @@ const WinnerModal: React.FC = () => {
 
   return (
     <>
-      <Modal isOpen={isModalOpen} onClose={handleClose} backdrop="blur">
+      <Modal isOpen={isModalOpen} onClose={handleClose} backdrop="blur" placement="center">
         <ModalContent>
           <ModalHeader>
             <h2 className="text-3xl font-bold">You Win!</h2>

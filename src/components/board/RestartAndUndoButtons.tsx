@@ -4,7 +4,7 @@ import useGameStore from "../../store/useGameStore"
 function RestartAndUndoButtons() {
     const {regenerateBoard,undo} = useGameStore()
   return (
-    <div>
+    <div className="flex gap-4">
         <Button color='danger'
             onPress={regenerateBoard}
           >
