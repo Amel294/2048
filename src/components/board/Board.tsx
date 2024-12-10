@@ -7,6 +7,7 @@ import useGameStore from '../../store/useGameStore';
 import Score from '../score/Score';
 import GameOver from './GameOver';
 import RestartAndUndoButtons from './RestartAndUndoButtons';
+import WinnerModal from './WinnerModal';
 
 const Board: React.FC = () => {
   const { board, setBoard, increaseScore, gameOver, setGameOver, addToHistory } = useGameStore();
@@ -198,7 +199,7 @@ const Board: React.FC = () => {
         <div className="flex justify-end gap-6">
           <RestartAndUndoButtons/>
         </div>
-
+        <WinnerModal/>
       </div>
     </div>
 
